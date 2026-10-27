@@ -10,23 +10,45 @@ Pure Rust, no dependencies.
 
 ## Listen
 
-Every clip plays the recording first, then 0.5 s of silence, then the model.
+Every clip plays the **recording** first, then 0.5 s of silence, then the
+**model**. The players below are videos (a waveform over the audio) because
+GitHub embeds only uploaded videos in a README; the plain MP3s are in
+[`audio/`](audio/) and on the [demo page](https://albos-inc.github.io/mathsound/).
 
-**[▶ Demo page with players](https://albos-inc.github.io/mathsound/)** (GitHub
-Pages; GitHub does not embed audio players in a README).
+**Strike, mezzo-forte (v8)** — Salamander C4 v8, then the model. This is the
+layer the soundboard EQ is identified from.
 
-| Clip | Recording vs model | Audio |
-|---|---|---|
-| Strike, p | Salamander C4 v4 vs the model at the same velocity | [audio/ab_C4_v4.mp3](audio/ab_C4_v4.mp3) |
-| Strike, mf | Salamander C4 v8 vs the model (the layer the soundboard EQ is identified from) | [audio/ab_C4_v8.mp3](audio/ab_C4_v8.mp3) |
-| Strike, ff | Salamander C4 v14 vs the model | [audio/ab_C4_v14.mp3](audio/ab_C4_v14.mp3) |
-| Release | What the SFZ plays on key-up (sample with a 1 s release + the release sample) vs the model's dampers | [audio/ab_C4_release.mp3](audio/ab_C4_release.mp3) |
-| Pedal resonance | Salamander's `harmLC4` resonance sample vs the model's sympathetic strings | [audio/ab_C4_pedal_resonance_loud.mp3](audio/ab_C4_pedal_resonance_loud.mp3) |
-| Pedal on / off | Model only: the same strike without, then with, the sustain pedal | [audio/ab_C4_pedal_vs_plain.mp3](audio/ab_C4_pedal_vs_plain.mp3) |
+https://github.com/user-attachments/assets/5e85af44-1225-49c5-a20c-155c14a20a83
 
-The same clips as videos (waveform + audio) are in `docs/media/`; a video
-dragged into a GitHub issue or comment yields a `user-attachments` URL that
-GitHub does embed as a player in Markdown.
+**Strike, piano (v4)** — Salamander C4 v4, then the model at the same hammer
+velocity.
+
+https://github.com/user-attachments/assets/923bce26-af95-48df-bc69-bb0795ef4835
+
+**Strike, fortissimo (v14)** — Salamander C4 v14, then the model. The model is
+still about 7 dB short above 4 kHz here.
+
+https://github.com/user-attachments/assets/3587b83b-661f-4790-87d2-72dfe414545d
+
+**Release** — what the SFZ plays on key-up (the note with a 1 s release plus
+the release sample), then the model's dampers. The model has no damper-landing
+noise.
+
+https://github.com/user-attachments/assets/e4847725-0179-49da-ba11-9ff28cad6793
+
+**Pedal resonance** — Salamander's `harmLC4` resonance sample (pedal down,
+struck strings stopped by hand), then the model's sympathetic strings in the
+same situation.
+
+https://github.com/user-attachments/assets/19e40773-2f40-4942-b88c-22bf28e5e0bb
+
+**Pedal off, then on** — model only: the same strike without the sustain
+pedal, then with it.
+
+https://github.com/user-attachments/assets/5e049bcb-41ae-4026-a7e7-cbfc49ab16af
+
+The MP4 sources are in `docs/media/`; the uploads live in
+[issue #1](https://github.com/albos-inc/mathsound/issues/1).
 
 ## How the sound is computed
 
