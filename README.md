@@ -182,3 +182,22 @@ loop above: right-going and left-going travelling waves turning around at both
 ends. It pairs with sf2studio's decaying waveform. Rendering to all sizes works
 like sf2studio's `examples/make_icon.rs`. Rejected drafts are in
 `icon/drafts/`.
+
+## License
+
+Licensed under either of
+
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE))
+- MIT license ([LICENSE-MIT](LICENSE-MIT))
+
+at your option. Unless you explicitly state otherwise, any contribution
+intentionally submitted for inclusion in the work by you, as defined in the
+Apache-2.0 license, shall be dual licensed as above, without any additional
+terms or conditions.
+
+The comparison clips in `audio/` and `docs/` contain excerpts of the
+[Salamander Grand Piano](https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html)
+by Alexander Holm, used under the
+[Creative Commons Attribution 3.0](https://creativecommons.org/licenses/by/3.0/)
+license; the soundboard response and attack residual the model uses are also
+derived from those recordings.
