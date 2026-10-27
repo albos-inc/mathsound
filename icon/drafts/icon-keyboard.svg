@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- sf2studio と同じ構図（黒漆、金の縁、下に鍵盤）。上の波形の代わりに、ハンマーが 3 本の弦の 1 本を打つ図。 -->
+  <defs>
+    <linearGradient id="lacquer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b2a2f"/>
+      <stop offset="0.45" stop-color="#121115"/>
+      <stop offset="1" stop-color="#050507"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.32" cy="0.2" r="0.75">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7e7b9"/>
+      <stop offset="0.35" stop-color="#d9b36a"/>
+      <stop offset="0.62" stop-color="#a8823f"/>
+      <stop offset="1" stop-color="#f1d79a"/>
+    </linearGradient>
+    <linearGradient id="goldWire" gradientUnits="userSpaceOnUse" x1="170" y1="0" x2="854" y2="0">
+      <stop offset="0" stop-color="#b8924e" stop-opacity="0.7"/>
+      <stop offset="0.3" stop-color="#f6e2a8"/>
+      <stop offset="0.6" stop-color="#d6ad5f"/>
+      <stop offset="1" stop-color="#9c7a3c" stop-opacity="0.7"/>
+    </linearGradient>
+    <linearGradient id="ebony" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2d2c31"/>
+      <stop offset="0.85" stop-color="#0b0b0d"/>
+      <stop offset="1" stop-color="#1c1b20"/>
+    </linearGradient>
+    <linearGradient id="ivory" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6f1e6"/>
+      <stop offset="1" stop-color="#d9d1c0"/>
+    </linearGradient>
+    <!-- 胡桃材の芯と柄（黒漆の上でも輪郭が読めるように少し明るく） -->
+    <linearGradient id="walnut" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6b4a2b"/>
+      <stop offset="0.7" stop-color="#3f2a16"/>
+      <stop offset="1" stop-color="#2a1b0e"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="14"/>
+      <feOffset dy="12" result="blur"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.45"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="waveGlow" x="-10%" y="-60%" width="120%" height="220%">
+      <feGaussianBlur stdDeviation="7" result="soft"/>
+      <feMerge><feMergeNode in="soft"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="body"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#lacquer)"/>
+  </g>
+  <g clip-path="url(#body)">
+    <rect x="100" y="100" width="824" height="824" fill="url(#glow)"/>
+
+    <!-- 鍵盤: sf2studio と同じ -->
+    <rect x="100" y="664" width="824" height="260" fill="#0a0a0c"/>
+    <g fill="url(#ivory)">
+      <rect x="178" y="676" width="88" height="190" rx="10"/>
+      <rect x="274" y="676" width="88" height="190" rx="10"/>
+      <rect x="370" y="676" width="88" height="190" rx="10"/>
+      <rect x="466" y="676" width="88" height="190" rx="10"/>
+      <rect x="562" y="676" width="88" height="190" rx="10"/>
+      <rect x="658" y="676" width="88" height="190" rx="10"/>
+      <rect x="754" y="676" width="88" height="190" rx="10"/>
+    </g>
+    <g fill="url(#ebony)">
+      <rect x="240" y="676" width="56" height="116" rx="8"/>
+      <rect x="336" y="676" width="56" height="116" rx="8"/>
+      <rect x="528" y="676" width="56" height="116" rx="8"/>
+      <rect x="624" y="676" width="56" height="116" rx="8"/>
+      <rect x="720" y="676" width="56" height="116" rx="8"/>
+    </g>
+    <g fill="#ffffff" opacity="0.18">
+      <rect x="246" y="680" width="44" height="22" rx="6"/>
+      <rect x="342" y="680" width="44" height="22" rx="6"/>
+      <rect x="534" y="680" width="44" height="22" rx="6"/>
+      <rect x="630" y="680" width="44" height="22" rx="6"/>
+      <rect x="726" y="680" width="44" height="22" rx="6"/>
+    </g>
+    <rect x="168" y="660" width="688" height="10" rx="5" fill="url(#gold)"/>
+
+    <!-- 上半分: 弦 3 本と、打たれた弦の振動包絡、下から打つハンマー -->
+    <g fill="none" stroke-linecap="round">
+      <path d="M 196 236 L 828 236" stroke="url(#goldWire)" stroke-width="8"/>
+      <path d="M 196 306 L 828 306" stroke="url(#goldWire)" stroke-width="8"/>
+      <path d="M 196 400 L 828 400" stroke="#d9b36a" stroke-opacity="0.35" stroke-width="6"/>
+      <path filter="url(#waveGlow)" d="M 196 400 Q 512 282 828 400" stroke="url(#goldWire)" stroke-width="11"/>
+      <path filter="url(#waveGlow)" d="M 196 400 Q 512 518 828 400" stroke="url(#goldWire)" stroke-width="11"/>
+    </g>
+    <g fill="url(#gold)">
+      <circle cx="184" cy="236" r="13"/><circle cx="184" cy="306" r="13"/><circle cx="184" cy="400" r="13"/>
+      <circle cx="840" cy="236" r="13"/><circle cx="840" cy="306" r="13"/><circle cx="840" cy="400" r="13"/>
+    </g>
+    <g transform="translate(0 -4)">
+      <rect x="497" y="596" width="30" height="70" rx="9" fill="url(#walnut)"/>
+      <rect x="440" y="556" width="144" height="56" rx="18" fill="url(#walnut)"/>
+      <rect x="440" y="556" width="144" height="9" rx="4" fill="url(#gold)" opacity="0.9"/>
+      <path d="M 444 560 C 444 500 480 466 512 466 C 544 466 580 500 580 560 Z" fill="url(#ivory)"/>
+    </g>
+
+    <path d="M 100 100 H 924 V 330 C 700 390, 330 390, 100 300 Z" fill="url(#sheen)"/>
+  </g>
+  <rect x="118" y="118" width="788" height="788" rx="168" fill="none" stroke="url(#gold)" stroke-width="7" opacity="0.9"/>
+</svg>

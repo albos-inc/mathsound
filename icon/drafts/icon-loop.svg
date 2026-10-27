@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- 黒漆と金。導波路のループ（右向きと左向きの進行波）と、下から入るハンマーの力。 -->
+  <defs>
+    <linearGradient id="lacquer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b2a2f"/>
+      <stop offset="0.45" stop-color="#121115"/>
+      <stop offset="1" stop-color="#050507"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.32" cy="0.2" r="0.75">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7e7b9"/>
+      <stop offset="0.35" stop-color="#d9b36a"/>
+      <stop offset="0.62" stop-color="#a8823f"/>
+      <stop offset="1" stop-color="#f1d79a"/>
+    </linearGradient>
+    <linearGradient id="goldWire" gradientUnits="userSpaceOnUse" x1="170" y1="0" x2="854" y2="0">
+      <stop offset="0" stop-color="#b8924e" stop-opacity="0.7"/>
+      <stop offset="0.3" stop-color="#f6e2a8"/>
+      <stop offset="0.6" stop-color="#d6ad5f"/>
+      <stop offset="1" stop-color="#9c7a3c" stop-opacity="0.7"/>
+    </linearGradient>
+    <linearGradient id="ivory" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6f1e6"/>
+      <stop offset="1" stop-color="#d9d1c0"/>
+    </linearGradient>
+    <!-- 胡桃材の芯と柄（黒漆の上でも輪郭が読めるように少し明るく） -->
+    <linearGradient id="walnut" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6b4a2b"/>
+      <stop offset="0.7" stop-color="#3f2a16"/>
+      <stop offset="1" stop-color="#2a1b0e"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="14"/>
+      <feOffset dy="12" result="blur"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.45"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="waveGlow" x="-10%" y="-60%" width="120%" height="220%">
+      <feGaussianBlur stdDeviation="7" result="soft"/>
+      <feMerge><feMergeNode in="soft"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="body"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#lacquer)"/>
+  </g>
+  <g clip-path="url(#body)">
+    <rect x="100" y="100" width="824" height="824" fill="url(#glow)"/>
+
+    <!-- 導波路のループ: 上を右へ、下を左へ進む波が両端で折り返す -->
+    <g fill="none" stroke="url(#goldWire)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 300 400 L 724 400 A 90 90 0 0 1 724 580 L 300 580 A 90 90 0 0 1 300 400 Z"/>
+    </g>
+    <!-- 進行波のこぶ（上は右向き、下は左向き） -->
+    <g fill="none" stroke="#f6e2a8" stroke-width="12" stroke-linecap="round">
+      <path filter="url(#waveGlow)" d="M 380 400 C 400 400 405 340 430 340 S 460 400 480 400"/>
+      <path filter="url(#waveGlow)" d="M 560 580 C 580 580 585 640 610 640 S 640 580 660 580"/>
+    </g>
+    <!-- 矢印: 上は右へ、下は左へ -->
+    <g fill="url(#gold)">
+      <path d="M 640 376 L 676 400 L 640 424 Z"/>
+      <path d="M 384 556 L 348 580 L 384 604 Z"/>
+    </g>
+    <!-- 両端のフィルタ: 右端に 3 本の目盛り（損失・分散・分数遅延） -->
+    <g stroke="url(#gold)" stroke-width="10" stroke-linecap="round">
+      <path d="M 806 450 L 846 450"/>
+      <path d="M 814 490 L 854 490"/>
+      <path d="M 806 530 L 846 530"/>
+    </g>
+    <!-- ハンマーの力: 下から入る 1 本のパルス -->
+    <path d="M 352 760 L 352 620" stroke="url(#gold)" stroke-width="12" stroke-linecap="round"/>
+    <path d="M 352 760 C 352 700 320 690 320 660" fill="none" stroke="#f6e2a8" stroke-opacity="0" stroke-width="1"/>
+    <rect x="312" y="762" width="80" height="60" rx="18" fill="url(#walnut)"/>
+    <path d="M 316 766 C 316 720 340 700 352 700 C 364 700 388 720 388 766 Z" fill="url(#ivory)"/>
+    <path d="M 100 100 H 924 V 330 C 700 390, 330 390, 100 300 Z" fill="url(#sheen)"/>
+  </g>
+  <rect x="118" y="118" width="788" height="788" rx="168" fill="none" stroke="url(#gold)" stroke-width="7" opacity="0.9"/>
+</svg>

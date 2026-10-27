@@ -1,0 +1,11 @@
+[package]
+name = "mathsound"
+version = "0.1.0"
+edition = "2021"
+description = "Physical-model piano synthesis: hammer, coupled strings, dampers, pedal and sympathetic resonance, compared against Salamander recordings"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+
+[profile.release]
+debug = 1

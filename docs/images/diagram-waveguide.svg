@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="460" viewBox="0 0 900 460" font-family="-apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', Meiryo, 'Segoe UI', 'Noto Sans CJK JP', sans-serif">
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#687082"/></marker>
+  <marker id="arrowB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4084ff"/></marker>
+  <marker id="arrowG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#22a06b"/></marker>
+</defs>
+<rect x="0.5" y="0.5" width="899" height="459" rx="16" fill="#ffffff" stroke="#d9dde5"/>
+<text x="30" y="40" font-size="19" font-weight="700" fill="#1f2430">弦 1 本の計算（1 サンプルごとに 1 周）</text>
+
+<!-- ナット -->
+<rect x="30" y="120" width="54" height="150" rx="10" fill="#f4f6f9" stroke="#d9dde5"/>
+<text x="57" y="200" font-size="13" fill="#1f2430" text-anchor="middle">ナット</text>
+<text x="57" y="218" font-size="11" fill="#687082" text-anchor="middle">反転反射</text>
+
+<!-- 右向きの波（上の遅延線） -->
+<rect x="96" y="128" width="520" height="40" rx="8" fill="#eef4ff" stroke="#c7d7ff"/>
+<path d="M 100 148 L 606 148" stroke="#4084ff" stroke-width="2" marker-end="url(#arrowB)"/>
+<path d="M 180 148 C 195 148 200 120 215 120 S 235 148 250 148" fill="none" stroke="#4084ff" stroke-width="3"/>
+<text x="612" y="118" font-size="12" fill="#4084ff" text-anchor="end">右向きの進行波（遅延線: 1 サンプルごとに 1 つ進む）</text>
+
+<!-- 左向きの波（下の遅延線） -->
+<rect x="96" y="222" width="520" height="40" rx="8" fill="#eefaf3" stroke="#bfe8d2"/>
+<path d="M 612 242 L 106 242" stroke="#22a06b" stroke-width="2" marker-end="url(#arrowG)"/>
+<path d="M 420 242 C 435 242 440 270 455 270 S 475 242 490 242" fill="none" stroke="#22a06b" stroke-width="3"/>
+<text x="356" y="284" font-size="12" fill="#22a06b" text-anchor="middle">左向きの進行波</text>
+
+<!-- ハンマー接続点 -->
+<line x1="160" y1="128" x2="160" y2="262" stroke="#9b6bff" stroke-width="2" stroke-dasharray="4 3"/>
+<path d="M 160 300 L 160 268" stroke="#9b6bff" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="128" y="300" width="64" height="24" rx="8" fill="#9b6bff"/>
+<rect x="150" y="324" width="20" height="40" rx="5" fill="#6e4b1f"/>
+<text x="160" y="316" font-size="11" fill="#ffffff" text-anchor="middle">フェルト</text>
+<text x="160" y="384" font-size="12" fill="#1f2430" text-anchor="middle">ハンマー</text>
+<text x="160" y="402" font-size="11" fill="#687082" text-anchor="middle">F = K x^p を毎サンプル陰的に解く</text>
+<text x="160" y="418" font-size="11" fill="#687082" text-anchor="middle">力を両方向の波に注入</text>
+
+<!-- ダンパー接続点 -->
+<line x1="250" y1="128" x2="250" y2="262" stroke="#fa8c28" stroke-width="2" stroke-dasharray="4 3"/>
+<rect x="226" y="72" width="48" height="22" rx="6" fill="#fa8c28"/>
+<path d="M 250 94 L 250 124" stroke="#fa8c28" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="250" y="64" font-size="12" fill="#1f2430" text-anchor="middle">ダンパー</text>
+<text x="320" y="86" font-size="11" fill="#687082" text-anchor="start">速度に比例した抵抗 −R·v を加える</text>
+<text x="320" y="101" font-size="11" fill="#687082" text-anchor="start">離鍵で 25 ms かけて R を上げる</text>
+
+<!-- ループフィルタ（ブリッジ側） -->
+<rect x="630" y="128" width="110" height="134" rx="10" fill="#f4f6f9" stroke="#d9dde5"/>
+<text x="685" y="150" font-size="12" font-weight="700" fill="#1f2430" text-anchor="middle">1 周ごとの</text>
+<text x="685" y="166" font-size="12" font-weight="700" fill="#1f2430" text-anchor="middle">フィルタ</text>
+<text x="685" y="190" font-size="11" fill="#687082" text-anchor="middle">損失（1 次 IIR）</text>
+<text x="685" y="208" font-size="11" fill="#687082" text-anchor="middle">分散（オールパス ×60）</text>
+<text x="685" y="226" font-size="11" fill="#687082" text-anchor="middle">分数遅延（Thiran）</text>
+<text x="685" y="282" font-size="10" fill="#687082" text-anchor="middle">減衰時間と非調和性を決める</text>
+<path d="M 616 148 L 630 148" stroke="#4084ff" stroke-width="2"/>
+<path d="M 630 242 L 616 242" stroke="#22a06b" stroke-width="2"/>
+
+<!-- ブリッジ -->
+<rect x="760" y="120" width="110" height="150" rx="10" fill="#f4f6f9" stroke="#d9dde5"/>
+<text x="815" y="150" font-size="13" font-weight="700" fill="#1f2430" text-anchor="middle">ブリッジ</text>
+<text x="815" y="170" font-size="11" fill="#687082" text-anchor="middle">v_b = Y_b · ΣF</text>
+<text x="815" y="186" font-size="11" fill="#687082" text-anchor="middle">全弦の力の和で</text>
+<text x="815" y="200" font-size="11" fill="#687082" text-anchor="middle">1 点が動く</text>
+<text x="815" y="222" font-size="11" fill="#687082" text-anchor="middle">ユニゾン 3 本と</text>
+<text x="815" y="236" font-size="11" fill="#687082" text-anchor="middle">他の鍵の弦を結合</text>
+<text x="815" y="256" font-size="10" fill="#687082" text-anchor="middle">うなり・二段減衰・共鳴</text>
+<path d="M 740 148 L 760 148" stroke="#4084ff" stroke-width="2" marker-end="url(#arrowB)"/>
+<path d="M 760 242 L 740 242" stroke="#22a06b" stroke-width="2" marker-end="url(#arrowG)"/>
+<!-- 他の弦 -->
+<path d="M 815 300 L 815 274" stroke="#687082" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="748" y="318" font-size="11" fill="#687082" text-anchor="end">他の 87 鍵の弦（ペダルで共鳴）</text>
+
+<!-- 出力 -->
+<rect x="560" y="356" width="150" height="40" rx="10" fill="#f4f6f9" stroke="#d9dde5"/>
+<text x="635" y="374" font-size="12" font-weight="700" fill="#1f2430" text-anchor="middle">響板 EQ</text>
+<text x="635" y="389" font-size="10" fill="#687082" text-anchor="middle">録音から同定した最小位相フィルタ</text>
+<path d="M 815 300 L 815 330 L 760 330 L 760 376 L 710 376" fill="none" stroke="#687082" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="770" y="362" font-size="11" fill="#687082" text-anchor="start">ブリッジに掛かる力 ΣF</text>
+<path d="M 560 376 L 500 376" stroke="#687082" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="470" y="381" font-size="13" font-weight="700" fill="#1f2430" text-anchor="end">音</text>
+<text x="30" y="440" font-size="11" fill="#687082">96 kHz で動かし、弦の片道は C4 で約 180 サンプル。遅延線の読み書き、フィルタ、接続点の代数だけで、行列や FFT は使わない。</text>
+</svg>
