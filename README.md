@@ -1,65 +1,87 @@
 # mathsound
 
-計算で音を作る物理モデル音源。最初の楽器はピアノで、1 音（C4）を物理モデルで合成し、Salamander Grand Piano V3 の録音と聴き比べるための試作です。
-打弦に加えて、離鍵（ダンパー）とペダル踏下時の弦共鳴もモデル化し、V3 付属の離鍵・共鳴サンプルと比較します。
-純 Rust、依存クレートなし。
+A physical-model instrument engine: sound computed from the mechanics of the
+instrument rather than played back from recordings. The first instrument is a
+piano. This prototype synthesizes one note (C4) and compares it, by listening
+and by measurement, against the Salamander Grand Piano V3 recordings of the
+same note, including key release (dampers) and sustain-pedal resonance.
 
-## 聴き比べ
+Pure Rust, no dependencies.
 
-各ファイルは「原音 → 無音 0.5 秒 → モデル」の順です。GitHub 上では MP3 をクリックすると
-ファイルページのプレーヤーで再生できます（README 内への埋め込みは GitHub が
-`<audio>` を許可しないため、リンク形式です）。
+## Listen
 
-| 音 | ファイル | 内容 |
+Every clip plays the recording first, then 0.5 s of silence, then the model.
+
+**[▶ Demo page with players](https://albos-inc.github.io/mathsound/)** (GitHub
+Pages; GitHub does not embed audio players in a README).
+
+| Clip | Recording vs model | Audio |
 |---|---|---|
-| 打弦 p | [audio/ab_C4_v4.mp3](audio/ab_C4_v4.mp3) | Salamander C4 v4 と、同じ強さのモデル |
-| 打弦 mf | [audio/ab_C4_v8.mp3](audio/ab_C4_v8.mp3) | Salamander C4 v8 と、同じ強さのモデル（響板 EQ の基準層） |
-| 打弦 ff | [audio/ab_C4_v14.mp3](audio/ab_C4_v14.mp3) | Salamander C4 v14 と、同じ強さのモデル |
-| 離鍵 | [audio/ab_C4_release.mp3](audio/ab_C4_release.mp3) | SFZ が鳴らす離鍵（サンプル + 離鍵サンプル）と、モデルのダンパー |
-| ペダル共鳴 | [audio/ab_C4_pedal_resonance_loud.mp3](audio/ab_C4_pedal_resonance_loud.mp3) | V3 の共鳴サンプル（harmLC4）と、モデルの共鳴弦 |
-| ペダル有無 | [audio/ab_C4_pedal_vs_plain.mp3](audio/ab_C4_pedal_vs_plain.mp3) | モデルのみ: ペダルなし → ペダル踏下 |
+| Strike, p | Salamander C4 v4 vs the model at the same velocity | [audio/ab_C4_v4.mp3](audio/ab_C4_v4.mp3) |
+| Strike, mf | Salamander C4 v8 vs the model (the layer the soundboard EQ is identified from) | [audio/ab_C4_v8.mp3](audio/ab_C4_v8.mp3) |
+| Strike, ff | Salamander C4 v14 vs the model | [audio/ab_C4_v14.mp3](audio/ab_C4_v14.mp3) |
+| Release | What the SFZ plays on key-up (sample with a 1 s release + the release sample) vs the model's dampers | [audio/ab_C4_release.mp3](audio/ab_C4_release.mp3) |
+| Pedal resonance | Salamander's `harmLC4` resonance sample vs the model's sympathetic strings | [audio/ab_C4_pedal_resonance_loud.mp3](audio/ab_C4_pedal_resonance_loud.mp3) |
+| Pedal on / off | Model only: the same strike without, then with, the sustain pedal | [audio/ab_C4_pedal_vs_plain.mp3](audio/ab_C4_pedal_vs_plain.mp3) |
 
-README の中で直接再生させたい場合は、音声に静止画を付けた MP4 を GitHub の Issue に
-ドラッグして得られる `user-attachments` の URL を README に貼ると、動画プレーヤーとして
-埋め込まれます（`ffmpeg -loop 1 -i icon/icon-512.png -i audio/x.mp3 -shortest x.mp4`）。
+The same clips as videos (waveform + audio) are in `docs/media/`; a video
+dragged into a GitHub issue or comment yields a `user-attachments` URL that
+GitHub does embed as a player in Markdown.
 
-## 計算の流れ
+## How the sound is computed
 
-![弦 1 本の計算](docs/images/diagram-waveguide.png)
+![One string, one sample at a time](docs/images/diagram-waveguide.png)
 
-弦は右向きと左向きの進行波を運ぶ 2 本の遅延線で、1 サンプルごとに 1 つ進みます。
-ナットで反転反射し、ブリッジ側で損失・分散・分数遅延のフィルタを 1 周に 1 回通ります。
-打弦点ではハンマーのフェルト力 `F = K x^p` を毎サンプル陰的に解いて両方向の波に注入し、
-ダンパー点では速度に比例した抵抗を加えます。ブリッジは全弦の力の和で動く 1 点で、
-ユニゾン 3 本と他の鍵の弦を結合します。出力はブリッジに掛かる力で、響板 EQ を通して音になります。
+A string is a pair of delay lines carrying the right-going and left-going
+travelling waves; each sample advances them by one. The nut reflects with a
+sign change. At the bridge end, once per round trip, the wave passes a loss
+filter, a dispersion filter and a fractional-delay filter. At the striking
+point the hammer's felt force `F = K x^p` is solved implicitly every sample and
+injected into both waves; at the damper point a resistance proportional to the
+string velocity is added. The bridge is one point moved by the sum of all
+string forces; it couples the three unison strings and the strings of every
+other key. The output is the force on the bridge, shaped by a soundboard EQ.
 
-## 何をモデル化しているか
+## What is modeled
 
-- **弦**: 速度波のデジタル導波路。ナット〜打弦点〜ダンパー〜ブリッジの 3 区間。
-  整数遅延 + Thiran 分数遅延で調律し、1 次 IIR の損失フィルタと、同一係数の 1 次オールパス
-  縦続による分散フィルタをブリッジ側の端に置く。分散フィルタは、ループの共振が非調和列
-  `f_n = n f0 sqrt(1 + B n^2)` に乗るように数値探索で合わせ込む（C4 で 32 部分音、RMS 誤差 0.3 セント）。
-  打弦点とダンパーの位置は、遅延線とフィルタ群遅延を合わせた実効的な弦長に対する比で決める。
-- **ハンマー**: べき乗則フェルト `F = K x^p` を持つ質点。接触力は弦ごとに陰的に解く。
-  Stulov 型ヒステリシス（`--hammer-eps`, `--hammer-tau-us`）も実装済みだが既定では無効。
-- **ダンパー**: ダンパー位置に置く粘性の点接触。離鍵で 25 ms かけて降り、打鍵・ペダルで上がる。
-  抵抗は鍵の基音に反比例（低い弦ほど波が接触点を通る回数が少ないため）。鍵 89 以上にはダンパーがない。
-- **ブリッジと共鳴弦**: 88 鍵すべての弦（打鍵する鍵は 3 本、他は既定で 3 本ずつ）がブリッジに
-  つながる。各弦は自分の取り付け点のアドミタンス `Y_b` を見て、他の鍵の弦の運動は重み
-  `w_i w_j`（既定 0.1、バスブリッジ側はさらに 0.3 倍）で伝わる。ペダルを踏むと全弦のダンパーが
-  上がり、共鳴弦として鳴る。出力はブリッジに掛かる力。
-- **響板**: 計算せず、録音から同定する。
-  1. ブリッジ力に掛ける最小位相 EQ。録音とモデル弦の部分音レベル比から作る
-     （1.5 kHz より上は隣接 3 部分音で平滑化）。
-  2. 録音から部分音を引いた残差（打撃音）を、ハンマーのピーク力に比例したゲインで加算する。
+- **Strings.** Digital waveguides carrying velocity waves, in three segments:
+  nut to striking point, striking point to damper, damper to bridge. Tuning is
+  an integer delay plus a first-order Thiran fractional delay. The loop
+  filters sit at the bridge end: a one-pole loss filter and a dispersion
+  filter made of identical first-order allpass sections. The allpass count and
+  coefficient are found by a numerical search so that the loop's resonances
+  land on the inharmonic series `f_n = n f0 sqrt(1 + B n^2)` (32 partials at
+  C4, 0.3 cents RMS). The striking and damper positions are fractions of the
+  string's effective length, which includes the filters' group delay.
+- **Hammer.** A mass with a power-law felt spring `F = K x^p`; the contact
+  force is solved implicitly per string. Stulov-type hysteresis is implemented
+  (`--hammer-eps`, `--hammer-tau-us`) but off by default.
+- **Dampers.** A viscous point contact at the damper position. On key-up the
+  resistance rises over 25 ms; a key-down or the pedal lifts it. The resistance
+  scales with 1/f0 per key, because a longer string's waves pass the damper
+  less often. Keys 89 and up have no dampers.
+- **Bridge and sympathetic strings.** The strings of all 88 keys end on the
+  bridge (three per key by default). Each string sees its own bridge
+  admittance `Y_b`; motion of the other keys' strings arrives through a
+  transfer weight `w_i w_j` (0.1 by default, times 0.3 for the bass bridge).
+  With the pedal down every damper lifts and the other strings ring in
+  sympathy. The output is the force on the bridge.
+- **Soundboard.** Not computed; identified from the recording:
+  1. a minimum-phase EQ on the bridge force, built from the ratio of the
+     recording's partial levels to the modeled string's partial levels
+     (smoothed over three neighbouring partials above 1.5 kHz);
+  2. the recording's residual after removing its partials (the hammer thump),
+     added with a gain proportional to the hammer's peak force.
 
-弦の減衰時間、インハーモニシティ、ブリッジ結合の強さは基準層（既定 `C4v8`）の録音から自動で同定します。
+String decay times, inharmonicity and the bridge coupling strength are
+identified automatically from the reference layer (`C4v8` by default).
 
-## 使い方
+## Usage
 
-比較対象は Salamander Grand Piano V3 完全版（48 kHz 24 ビット、離鍵・ペダル共鳴・ペダル音の
-サンプル付き）です。`../external/salamander-sfz/` に展開済みのものから、C4 に関係するサンプルを
-`salamander/` に WAV でデコードします（`flac` コマンドが必要）。
+The reference is the full Salamander Grand Piano V3 set (48 kHz, 24-bit, with
+release, pedal-resonance and pedal-noise samples). `prepare.sh` decodes the
+samples that matter for C4 from `../external/salamander-sfz/` into
+`salamander/` as WAV (needs the `flac` command).
 
 ```bash
 ./prepare.sh
@@ -69,60 +91,72 @@ README の中で直接再生させたい場合は、音声に静止画を付け�
 cargo run --release
 ```
 
-既定では共鳴弦 87 鍵 × 3 本を含むため 1 回約 70 秒かかります。打弦だけを速く試すときは
-`--no-symp`（約 3 秒）、共鳴弦を 1 本ずつにするなら `--symp-strings 1` です。
+The default run includes the 87 sympathetic keys with three strings each and
+takes about 70 s. `--no-symp` renders strikes only (about 3 s);
+`--symp-strings 1` uses one string per sympathetic key.
 
-`out/` に以下ができます。
+Files written to `out/`:
 
-| ファイル | 内容 |
+| File | Content |
 |---|---|
-| `ab_C4_v{4,8,14}.wav` | 録音 4 秒 → 無音 0.5 秒 → モデル 4 秒 |
-| `ab_C4_release.wav` | SFZ どおりの離鍵（サンプルに 1 秒リリース + rel40）→ モデル（1 秒保持して離鍵） |
-| `ab_C4_pedal_resonance_{loud,soft}.wav` | V3 の共鳴サンプル → モデル（ペダル踏下で打弦し 1 秒後に打鍵弦だけ止めた後） |
-| `ab_C4_pedal_vs_plain.wav` | モデルのみ: ペダルなし → ペダル踏下 |
-| `model_C4_v*.wav`, `model_C4_v*_dry.wav` | モデル（響板あり / ブリッジ力のみ） |
-| `model_C4_v8_release.wav`, `model_C4_v8_pedal.wav`, `model_C4_pedal_resonance_*.wav` | 各シナリオのモデル出力 |
-| `salamander_C4_v*.wav`, `sfz_C4_release.wav` | 録音と SFZ 相当の離鍵 |
-| `run.log` | 部分音ごとの周波数・レベル・減衰率の比較表、離鍵後と共鳴の包絡 |
+| `ab_C4_v{4,8,14}.wav` | recording 4 s, 0.5 s gap, model 4 s |
+| `ab_C4_release.wav` | the SFZ release (sample with a 1 s release + `rel40`) vs the model (held 1 s, then key-up) |
+| `ab_C4_pedal_resonance_{loud,soft}.wav` | Salamander's resonance sample vs the model after the struck strings are stopped by hand with the pedal down |
+| `ab_C4_pedal_vs_plain.wav` | model only: without, then with, the pedal |
+| `model_C4_v*.wav`, `model_C4_v*_dry.wav` | model with the soundboard / bridge force only |
+| `model_C4_v8_release.wav`, `model_C4_v8_pedal.wav`, `model_C4_pedal_resonance_*.wav` | the model in each scenario |
+| `salamander_C4_v*.wav`, `sfz_C4_release.wav` | the recording and the SFZ-equivalent release |
+| `run.log` | per-partial frequency, level and decay comparison; envelopes after key-up and of the resonance |
 
-主なオプション: `--hammer-mass`, `--hammer-k`, `--hammer-p`, `--detune a,b,c`, `--yz`,
-`--vel-scale`, `--vel-exp`, `--damper-rho`, `--damper-pos`, `--damper-ms`, `--release-at`,
-`--release-noise`（離鍵サンプルの機械音をモデルにも足す）, `--symp-weight`, `--symp-strings`,
-`--no-symp`, `--no-eq`, `--no-thump`, `--trace 1,2,7`, `--summary`。
-`--analyze path.wav [f0]` で任意の WAV の部分音表と包絡を表示できます。
+Main options: `--hammer-mass`, `--hammer-k`, `--hammer-p`, `--detune a,b,c`,
+`--yz`, `--vel-scale`, `--vel-exp`, `--damper-rho`, `--damper-pos`,
+`--damper-ms`, `--release-at`, `--release-noise` (adds the release sample's
+mechanical noise to the model too), `--symp-weight`, `--symp-strings`,
+`--no-symp`, `--no-eq`, `--no-thump`, `--trace 1,2,7`, `--summary`.
+`--analyze path.wav [f0]` prints the partial table and envelopes of any WAV.
 
-## 現状の一致度（C4、既定パラメータ）
+## How close it is (C4, default parameters)
 
-- 打弦: 部分音の周波数は全層で 32 部分音まで ±2 セント以内。レベルは v8 基準で、
-  v4 は −2〜−4 dB、v14 は 4 kHz 以上で −7 dB（強打の高域がまだ足りない）。
-  基音の二段減衰（約 1 秒で折れて、その後ゆっくり）は再現。
-- 離鍵: 離鍵後 0.2 秒で基音が −40 dB、第 2・第 3 部分音はそれより速く減衰する。
-  SFZ 側は離鍵サンプルの機械音（ダンパー着弦音）が支配的で、モデルにはそれがない
-  （`--release-noise` で足せる）。離鍵後の残響としてダンパーの降りたバス弦が
-  −40 dB 程度で残る。
-- ペダル共鳴: 打鍵弦を止めた直後 0.5 秒のレベルは、強で −31 dB（原音 −30 dB）、
-  弱で −32 dB（原音 −35 dB）。ただし原音の共鳴サンプルは 1 秒以降がノイズフロア
-  （おそらくフェードアウト処理済み）なので、共鳴の減衰の長さは検証できていない。
-  モデルの共鳴は原音より長く続く。
+- **Strike.** Partial frequencies within ±2 cents up to the 32nd partial at
+  every velocity. Levels, relative to the v8 layer the EQ comes from: v4 is
+  2–4 dB low across the board; v14 is 7 dB low above 4 kHz (the model still
+  lacks the brightness of a hard blow). The two-stage decay of the fundamental
+  (a knee at about 1 s, then a slow tail) is reproduced.
+- **Release.** 0.2 s after key-up the fundamental is 40 dB down and the 2nd and
+  3rd partials fall faster. The SFZ side is dominated by the release sample's
+  mechanical noise (the damper landing), which the model does not have
+  (`--release-noise` adds it). After the release, bass strings with their
+  dampers down linger about 40 dB down.
+- **Pedal resonance.** Over the first 0.5 s after the struck strings are
+  stopped, the model is at −31 dB (recording −30 dB) for the loud case and
+  −32 dB (recording −35 dB) for the soft case. The recording's resonance
+  samples reach the noise floor after about 1 s (they appear to be faded), so
+  how long the resonance should last cannot be verified; the model's rings
+  longer.
 
-## わかったこと
+## Findings
 
-- ハンマーの質量・硬さ・指数を総当たりしても、強打時の 4 kHz 以上の増え方は
-  録音に届かなかった（最良で −5〜−7 dB）。Stulov のヒステリシスも効かなかった。
-  縦振動（ファントム部分音）かハンマー柄の動きなど、未実装の要素が要る。
-- 低い部分音のレベルは隣同士で 20 dB 以上違う（録音の 2 倍音は基音より強く、
-  3 倍音は 27 dB 弱い）。これは響板とマイクの固有モードによるもので、
-  弦とハンマーの物理からは出てこない。
-- 分散フィルタの群遅延（C4 で片道 105 サンプル分）を弦長に数えないと、打弦点と
-  ダンパーの位置が物理的な位置からずれる。ダンパーが第 3 部分音の節に乗って
-  減衰しなくなる形で発覚した。
-- 共鳴弦は各弦が自分の取り付け点のアドミタンスを見る形にしないと、弱い結合重みが
-  共鳴弦自身の減衰まで弱めてしまい、共鳴が止まらなくなる。
+- No combination of hammer mass, stiffness and exponent produced the growth
+  above 4 kHz that the recording shows on a hard blow (the best was 5–7 dB
+  short), and Stulov hysteresis did not help. Something not yet modeled is
+  needed: longitudinal (phantom) partials, the hammer shank, or both.
+- Neighbouring low partials differ by 20 dB or more in the recording (the 2nd
+  partial is louder than the fundamental, the 3rd is 27 dB quieter). That is
+  the soundboard's and microphone's own modes, and no string or hammer physics
+  produces it.
+- The dispersion filter's group delay (105 samples one way at C4) has to count
+  toward the string length, or the striking and damper positions drift from
+  their physical values. This surfaced as a damper sitting on a node of the
+  3rd partial and failing to stop it.
+- Every sympathetic string must see its own bridge admittance. Scaling the
+  whole coupling by a small transfer weight also scaled down the sympathetic
+  strings' own losses, and the resonance never stopped.
 
-## アイコン
+## Icon
 
-`icon/icon.svg`（1024 px から 32 px までの PNG も同梱）。sf2studio のアイコンと同じ黒漆と
-シャンパンゴールドの様式で、下に鍵盤、上に導波路のループ（右向きと左向きの進行波が
-両端で折り返す）を置いた図です。sf2studio の「減衰波形と鍵盤」と対になります。
-各サイズへの変換は sf2studio の `examples/make_icon.rs` と同じ手順でできます。
-没にした案は `icon/drafts/` にあります。
+`icon/icon.svg` (with PNGs from 1024 to 32 px). The same black lacquer and
+champagne gold as sf2studio's icon, with the keyboard below and a waveguide
+loop above: right-going and left-going travelling waves turning around at both
+ends. It pairs with sf2studio's decaying waveform. Rendering to all sizes works
+like sf2studio's `examples/make_icon.rs`. Rejected drafts are in
+`icon/drafts/`.
